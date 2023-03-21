@@ -1,6 +1,6 @@
 package ar.com.besysoft.tallermecanico.service.interfaces;
 
-import ar.com.besysoft.tallermecanico.model.entities.Cliente;
+import ar.com.besysoft.tallermecanico.model.Cliente;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package ar.com.besysoft.tallermecanico.service.implementations;
 
-import ar.com.besysoft.tallermecanico.model.entities.Cliente;
+import ar.com.besysoft.tallermecanico.model.Cliente;
 import ar.com.besysoft.tallermecanico.repository.ClienteRepository;
 import ar.com.besysoft.tallermecanico.service.interfaces.ClienteService;
 import org.springframework.stereotype.Service;

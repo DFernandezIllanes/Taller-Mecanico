@@ -1,4 +1,4 @@
-package ar.com.besysoft.tallermecanico.model.dtos;
+package ar.com.besysoft.tallermecanico.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package ar.com.besysoft.tallermecanico.service.interfaces;
 
-import ar.com.besysoft.tallermecanico.model.entities.Vehiculo;
+import ar.com.besysoft.tallermecanico.model.Vehiculo;
 
 import java.util.List;
 

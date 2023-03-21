@@ -1,4 +1,4 @@
-package ar.com.besysoft.tallermecanico.model.entities;
+package ar.com.besysoft.tallermecanico.model;
 
 import ar.com.besysoft.tallermecanico.exception.alreadyAdded.VehiculoAlreadyAddedException;
 import lombok.AllArgsConstructor;

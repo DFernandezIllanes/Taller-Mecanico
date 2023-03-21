@@ -1,10 +1,10 @@
 package ar.com.besysoft.tallermecanico.controller;
 
-import ar.com.besysoft.tallermecanico.model.dtos.RecepcionRequestDTO;
-import ar.com.besysoft.tallermecanico.model.dtos.mappers.ClienteMapper;
-import ar.com.besysoft.tallermecanico.model.dtos.mappers.VehiculoMapper;
-import ar.com.besysoft.tallermecanico.model.entities.Cliente;
-import ar.com.besysoft.tallermecanico.model.entities.Vehiculo;
+import ar.com.besysoft.tallermecanico.dtos.requests.RecepcionRequestDTO;
+import ar.com.besysoft.tallermecanico.dtos.mappers.ClienteMapper;
+import ar.com.besysoft.tallermecanico.dtos.mappers.VehiculoMapper;
+import ar.com.besysoft.tallermecanico.model.Cliente;
+import ar.com.besysoft.tallermecanico.model.Vehiculo;
 import ar.com.besysoft.tallermecanico.service.interfaces.IngresoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

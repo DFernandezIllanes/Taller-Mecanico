@@ -1,7 +1,7 @@
-package ar.com.besysoft.tallermecanico.model.dtos.mappers;
+package ar.com.besysoft.tallermecanico.dtos.mappers;
 
-import ar.com.besysoft.tallermecanico.model.dtos.VehiculoDTO;
-import ar.com.besysoft.tallermecanico.model.entities.Vehiculo;
+import ar.com.besysoft.tallermecanico.dtos.VehiculoDTO;
+import ar.com.besysoft.tallermecanico.model.Vehiculo;
 
 import java.util.List;
 import java.util.stream.Collectors;

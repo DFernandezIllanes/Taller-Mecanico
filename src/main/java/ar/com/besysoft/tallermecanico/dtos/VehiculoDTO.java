@@ -1,4 +1,4 @@
-package ar.com.besysoft.tallermecanico.model.dtos;
+package ar.com.besysoft.tallermecanico.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

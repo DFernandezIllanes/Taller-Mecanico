@@ -1,7 +1,7 @@
 package ar.com.besysoft.tallermecanico.controller;
 
-import ar.com.besysoft.tallermecanico.model.dtos.mappers.ClienteMapper;
-import ar.com.besysoft.tallermecanico.model.entities.Cliente;
+import ar.com.besysoft.tallermecanico.dtos.mappers.ClienteMapper;
+import ar.com.besysoft.tallermecanico.model.Cliente;
 import ar.com.besysoft.tallermecanico.service.interfaces.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

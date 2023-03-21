@@ -2,8 +2,9 @@ package ar.com.besysoft.tallermecanico.controller.handlerException;
 
 import ar.com.besysoft.tallermecanico.exception.alreadyAdded.EntityAlreadyAddedException;
 import ar.com.besysoft.tallermecanico.exception.mismatch.EntityMismatchException;
+import ar.com.besysoft.tallermecanico.exception.notAvailable.EntityNotAvailableException;
 import ar.com.besysoft.tallermecanico.exception.notFound.EntityNotFoundException;
-import ar.com.besysoft.tallermecanico.model.dtos.ExceptionDTO;
+import ar.com.besysoft.tallermecanico.exception.ExceptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +55,17 @@ public class ApiControllerAdvice {
     public ExceptionDTO alreadyAdded(EntityAlreadyAddedException ex) {
         return new ExceptionDTO(
                 HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDTO notAvailable(EntityNotAvailableException ex) {
+        return new ExceptionDTO(
+                HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 null
         );

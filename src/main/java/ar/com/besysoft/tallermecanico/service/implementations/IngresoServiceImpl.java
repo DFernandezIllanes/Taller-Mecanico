@@ -1,15 +1,14 @@
 package ar.com.besysoft.tallermecanico.service.implementations;
 
 import ar.com.besysoft.tallermecanico.exception.mismatch.ClienteMismatchException;
-import ar.com.besysoft.tallermecanico.model.entities.Cliente;
-import ar.com.besysoft.tallermecanico.model.entities.Vehiculo;
+import ar.com.besysoft.tallermecanico.model.Cliente;
+import ar.com.besysoft.tallermecanico.model.Vehiculo;
 import ar.com.besysoft.tallermecanico.repository.ClienteRepository;
 import ar.com.besysoft.tallermecanico.repository.VehiculoRepository;
 import ar.com.besysoft.tallermecanico.service.interfaces.IngresoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

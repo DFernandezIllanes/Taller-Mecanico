@@ -1,5 +1,7 @@
-package ar.com.besysoft.tallermecanico.model.dtos;
+package ar.com.besysoft.tallermecanico.dtos.requests;
 
+import ar.com.besysoft.tallermecanico.dtos.ClienteDTO;
+import ar.com.besysoft.tallermecanico.dtos.VehiculoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
