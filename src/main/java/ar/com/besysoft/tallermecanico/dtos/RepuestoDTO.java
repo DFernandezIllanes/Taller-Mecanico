@@ -1,5 +1,6 @@
 package ar.com.besysoft.tallermecanico.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,18 +8,24 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Time;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ManoObraInfoDTO {
+@NoArgsConstructor
+public class RepuestoDTO {
+    private BigInteger id;
     @NotNull
     @NotEmpty
-    private String detalle;
+    private String marca;
     @NotNull
-    private Time duracionEnHs;
-    private BigInteger mecanicoId;
+    @NotEmpty
+    private String modelo;
+    @NotNull
+    @NotEmpty
+    private String repuesto;
+    @NotNull
+    private BigDecimal valor;
 }

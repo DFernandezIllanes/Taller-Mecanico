@@ -1,5 +1,6 @@
 package ar.com.besysoft.tallermecanico.dtos.mappers;
 
+import ar.com.besysoft.tallermecanico.dtos.DetalleOrdenInfoDTO;
 import ar.com.besysoft.tallermecanico.dtos.ManoObraInfoDTO;
 import ar.com.besysoft.tallermecanico.dtos.OrdenTrabajoDTO;
 import ar.com.besysoft.tallermecanico.dtos.OrdenTrabajoDetailsDTO;
@@ -78,6 +79,10 @@ public class OrdenTrabajoMapper {
         dto.setVehiculo(entity.getVehiculo().getPatente());
         List<ManoObraInfoDTO> manoObraInfoDTOList = ManoObraMapper.mapListToInfoDto(entity.getManoObraList());
         dto.setManoObraInfoDTOList(manoObraInfoDTOList);
+        if(!entity.getDetallesList().isEmpty()) {
+            List<DetalleOrdenInfoDTO> detalleOrdenInfoDTOList = DetalleOrdenTrabajoMapper.mapListToInfoDto(entity.getDetallesList());
+            dto.setDetalleOrdenInfoDTOList(detalleOrdenInfoDTOList);
+        }
         return dto;
     }
 }

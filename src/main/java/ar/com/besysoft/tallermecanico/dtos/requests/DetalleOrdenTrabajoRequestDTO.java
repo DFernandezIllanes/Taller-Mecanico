@@ -1,4 +1,4 @@
-package ar.com.besysoft.tallermecanico.dtos;
+package ar.com.besysoft.tallermecanico.dtos.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,18 +7,21 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
-import java.sql.Time;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManoObraInfoDTO {
+public class DetalleOrdenTrabajoRequestDTO {
+    @NotNull
+    private Integer cantidad;
     @NotNull
     @NotEmpty
-    private String detalle;
+    private String marca;
     @NotNull
-    private Time duracionEnHs;
-    private BigInteger mecanicoId;
+    @NotEmpty
+    private String modelo;
+    @NotNull
+    @NotEmpty
+    private String repuesto;
 }

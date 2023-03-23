@@ -55,8 +55,8 @@ public class OrdenTrabajo {
     private Vehiculo vehiculo;
     @OneToMany(mappedBy = "ordenTrabajo")
     private List<ManoObra> manoObraList = new ArrayList<>();
-    @Transient
-    private List<String> detalles;
+    @OneToMany(mappedBy = "ordenTrabajo")
+    private List<DetalleOrdenTrabajo> detallesList = new ArrayList<>();
 
     public void addManoObra(ManoObra manoObra) {
         if(this.manoObraList.stream().anyMatch(m -> m.getId().equals(manoObra.getId()))) {

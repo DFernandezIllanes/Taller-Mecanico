@@ -33,6 +33,13 @@ public class ManoObraMapper {
         return dto;
     }
 
+    public static ManoObra mapInfoDtoToEntity(ManoObraInfoDTO dto) {
+        ManoObra entity = new ManoObra();
+        entity.setDetalle(dto.getDetalle());
+        entity.setDuracionEnHs(dto.getDuracionEnHs());
+        return entity;
+    }
+
     public static List<ManoObraInfoDTO> mapListToInfoDto(List<ManoObra> entities) {
         return entities.stream()
                 .map(ManoObraMapper::mapToInfoDto)
