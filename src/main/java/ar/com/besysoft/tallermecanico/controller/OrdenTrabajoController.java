@@ -1,6 +1,7 @@
 package ar.com.besysoft.tallermecanico.controller;
 
 import ar.com.besysoft.tallermecanico.dtos.MecanicoDTO;
+import ar.com.besysoft.tallermecanico.dtos.PagoRequestDTO;
 import ar.com.besysoft.tallermecanico.dtos.mappers.MecanicoMapper;
 import ar.com.besysoft.tallermecanico.dtos.mappers.OrdenTrabajoMapper;
 import ar.com.besysoft.tallermecanico.dtos.requests.OrdenTrabajoRequestDTO;
@@ -43,6 +44,13 @@ public class OrdenTrabajoController {
         OrdenTrabajo ordenTrabajo = OrdenTrabajoMapper.mapRequestDtoToEntity(requestDTO);
         ordenTrabajo = this.ordenTrabajoService.generar(ordenTrabajo);
         return new ResponseEntity<>(OrdenTrabajoMapper.mapToDto(ordenTrabajo), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/factura")
+    public ResponseEntity<?> bill(@PathVariable(required = true, name = "id") BigInteger ordenTrabajoId,
+                                  @Valid @RequestBody(required = true) PagoRequestDTO pagoRequestDTO) {
+        OrdenTrabajo factura = this.ordenTrabajoService.generateBill(ordenTrabajoId, pagoRequestDTO);
+        return new ResponseEntity<>(OrdenTrabajoMapper.mapToDetailsDto(factura), HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}")

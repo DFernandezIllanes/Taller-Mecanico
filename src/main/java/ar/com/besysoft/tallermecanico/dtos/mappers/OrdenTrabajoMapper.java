@@ -10,6 +10,7 @@ import ar.com.besysoft.tallermecanico.model.ManoObra;
 import ar.com.besysoft.tallermecanico.model.OrdenTrabajo;
 import ar.com.besysoft.tallermecanico.model.Vehiculo;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,7 +75,11 @@ public class OrdenTrabajoMapper {
         dto.setKilometraje(entity.getKilometraje());
         dto.setNivelCombustible(entity.getNivelCombustible());
         dto.setTipoTarjeta(entity.getTipoTarjeta());
-        dto.setAdministrativo("");
+        if(entity.getAdministrativo() == null) {
+            dto.setAdministrativo("");
+        } else {
+            dto.setAdministrativo(entity.getAdministrativo().getApellido() + " - " + entity.getAdministrativo().getNombres());
+        }
         dto.setRecepcionista(entity.getRecepcionista().getApellido() + " - " + entity.getRecepcionista().getNombres());
         dto.setVehiculo(entity.getVehiculo().getPatente());
         List<ManoObraInfoDTO> manoObraInfoDTOList = ManoObraMapper.mapListToInfoDto(entity.getManoObraList());
@@ -82,6 +87,11 @@ public class OrdenTrabajoMapper {
         if(!entity.getDetallesList().isEmpty()) {
             List<DetalleOrdenInfoDTO> detalleOrdenInfoDTOList = DetalleOrdenTrabajoMapper.mapListToInfoDto(entity.getDetallesList());
             dto.setDetalleOrdenInfoDTOList(detalleOrdenInfoDTOList);
+            BigDecimal importeTotal = new BigDecimal(0.0);
+            for(int i = 0; i< detalleOrdenInfoDTOList.size(); i++) {
+                importeTotal = importeTotal.add(detalleOrdenInfoDTOList.get(i).getValorTotal());
+            }
+            dto.setImporteTotal(importeTotal);
         }
         return dto;
     }

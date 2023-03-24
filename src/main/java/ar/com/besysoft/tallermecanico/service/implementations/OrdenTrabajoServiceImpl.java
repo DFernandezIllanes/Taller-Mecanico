@@ -1,8 +1,8 @@
 package ar.com.besysoft.tallermecanico.service.implementations;
 
+import ar.com.besysoft.tallermecanico.dtos.PagoRequestDTO;
 import ar.com.besysoft.tallermecanico.exception.notAvailable.MecanicoNotAvailableException;
 import ar.com.besysoft.tallermecanico.exception.notFound.EmpleadoNotFoundException;
-import ar.com.besysoft.tallermecanico.exception.notFound.MecanicoNotFoundException;
 import ar.com.besysoft.tallermecanico.exception.notFound.OrdenTrabajoNotFoundException;
 import ar.com.besysoft.tallermecanico.exception.notFound.VehiculoNotFoundException;
 import ar.com.besysoft.tallermecanico.model.*;
@@ -11,6 +11,8 @@ import ar.com.besysoft.tallermecanico.service.interfaces.OrdenTrabajoService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +87,13 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
         return buscarOrdenTrabajoPorId(id);
     }
 
+    @Override
+    public OrdenTrabajo generateBill(BigInteger ordenTrabajoId, PagoRequestDTO pagoRequestDTO) {
+        OrdenTrabajo ordenTrabajo = buscarOrdenTrabajoPorId(ordenTrabajoId);
+        ordenTrabajo = cargarDatosPago(ordenTrabajo, pagoRequestDTO);
+        return cambiarEstadoOrdenTrabajoYGuardar(ordenTrabajo, "Facturada");
+    }
+
     private OrdenTrabajo buscarOrdenTrabajoPorId(BigInteger id) {
         Optional<OrdenTrabajo> ordenTrabajoOptional = this.ordenTrabajoRepository.findById(id);
         if(!ordenTrabajoOptional.isPresent()) {
@@ -107,7 +116,12 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
 
     private Optional<Empleado> validarRecepcionista(OrdenTrabajo ordenTrabajo) {
         Empleado recepcionista = ordenTrabajo.getRecepcionista();
-        return this.empleadoRepository.findByIdAndTipoEmpleado(recepcionista.getId(), "recepcionista");
+        //return this.empleadoRepository.findByIdAndTipoEmpleado(recepcionista.getId(), "recepcionista");
+        return buscarEmpleadoPorIdYTipo(recepcionista.getId(), "recepcionista");
+    }
+
+    private Optional<Empleado> buscarEmpleadoPorIdYTipo(BigInteger empleadoId, String tipoEmpleado) {
+        return this.empleadoRepository.findByIdAndTipoEmpleado(empleadoId, tipoEmpleado);
     }
 
     private Optional<Vehiculo> validarVehiculo(OrdenTrabajo ordenTrabajo) {
@@ -132,5 +146,34 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
         manoObra.setOrdenTrabajo(ordenTrabajo);
         manoObra.setMecanico(mecanico);
         return this.manoObraRepository.save(manoObra);
+    }
+
+    private OrdenTrabajo cargarDatosPago(OrdenTrabajo ordenTrabajo, PagoRequestDTO pagoRequestDTO) {
+        Empleado administrativo = validarEmpleadoPorIdyTipo(pagoRequestDTO.getAdministrativoId(), "administrativo");
+        ordenTrabajo.setAdministrativo(administrativo);
+        ordenTrabajo.setFormaPago(pagoRequestDTO.getFormaPago());
+        if(!pagoRequestDTO.getFormaPago().equalsIgnoreCase("efectivo")) {
+            ordenTrabajo.setTipoTarjeta(pagoRequestDTO.getTipoTarjeta());
+            if(pagoRequestDTO.getTipoTarjeta().equalsIgnoreCase("credito")) {
+                ordenTrabajo.setCantidadCuotas(pagoRequestDTO.getCantidadCuotas());
+            }
+        }
+        ordenTrabajo.setFechaPago(Timestamp.valueOf(LocalDateTime.now()));
+        return ordenTrabajo;
+    }
+
+    private Empleado validarEmpleadoPorIdyTipo(BigInteger empleadoId, String tipoEmpleado) {
+        Optional<Empleado> optionalEmpleado = buscarEmpleadoPorIdYTipo(empleadoId, tipoEmpleado);
+        if(!optionalEmpleado.isPresent()) {
+            throw new EmpleadoNotFoundException(String.format("No existe un empleado %s con ID %d", tipoEmpleado, empleadoId),
+                    new RuntimeException("Causa Original")
+            );
+        }
+        return optionalEmpleado.get();
+    }
+
+    private OrdenTrabajo cambiarEstadoOrdenTrabajoYGuardar(OrdenTrabajo ordenTrabajo, String nuevoEstado) {
+        ordenTrabajo.setEstado(nuevoEstado);
+        return this.ordenTrabajoRepository.save(ordenTrabajo);
     }
 }

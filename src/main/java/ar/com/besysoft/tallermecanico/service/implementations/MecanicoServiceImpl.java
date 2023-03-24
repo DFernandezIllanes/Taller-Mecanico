@@ -50,7 +50,7 @@ public class MecanicoServiceImpl implements MecanicoService {
         Mecanico mecanico = buscarMecanicoPorId(id);
         ManoObra manoObra = buscarUltimaManoObraAsignada(mecanico);
         OrdenTrabajo ordenTrabajo = buscarOrdenTrabajoPorId(manoObra.getOrdenTrabajo().getId());
-        return cambiarEstadoOrdenTrabajo(ordenTrabajo, "En reparacion");
+        return cambiarEstadoOrdenTrabajoYGuardar(ordenTrabajo, "En reparacion");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MecanicoServiceImpl implements MecanicoService {
         OrdenTrabajo ordenTrabajo = buscarOrdenTrabajoPorId(manoObraAsignada.getOrdenTrabajo().getId());
         ordenTrabajo.setFechaFinReparacion(Timestamp.valueOf(LocalDateTime.now()));
         cargarDetallesOrdenTrabajo(listaDetalles, ordenTrabajo);
-        return cambiarEstadoOrdenTrabajo(ordenTrabajo, "Para facturar");
+        return cambiarEstadoOrdenTrabajoYGuardar(ordenTrabajo, "Para facturar");
     }
 
     private Mecanico buscarMecanicoPorId(BigInteger id) {
@@ -94,7 +94,7 @@ public class MecanicoServiceImpl implements MecanicoService {
         return ordenTrabajoOptional.get();
     }
 
-    private OrdenTrabajo cambiarEstadoOrdenTrabajo(OrdenTrabajo ordenTrabajo, String nuevoEstado) {
+    private OrdenTrabajo cambiarEstadoOrdenTrabajoYGuardar(OrdenTrabajo ordenTrabajo, String nuevoEstado) {
         ordenTrabajo.setEstado(nuevoEstado);
         return this.ordenTrabajoRepository.save(ordenTrabajo);
     }
