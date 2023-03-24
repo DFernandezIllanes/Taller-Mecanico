@@ -59,6 +59,12 @@ public class OrdenTrabajoController {
 
         OrdenTrabajo ordenTrabajo = this.ordenTrabajoService.asignarMecanico(ordenTrabajoId, mecanicoId);
         return ResponseEntity.ok(OrdenTrabajoMapper.mapToDto(ordenTrabajo));
+    }
 
+    @PutMapping(path = "/{id}/cierre")
+    public ResponseEntity<?> deliverVehicle(@PathVariable(required = true, name = "id") BigInteger ordenTrabajoId) {
+
+        OrdenTrabajo ordenTrabajo = this.ordenTrabajoService.closeBill(ordenTrabajoId);
+        return ResponseEntity.ok(OrdenTrabajoMapper.mapToDetailsDto(ordenTrabajo));
     }
 }

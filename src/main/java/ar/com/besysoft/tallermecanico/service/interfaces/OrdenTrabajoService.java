@@ -14,4 +14,5 @@ public interface OrdenTrabajoService {
     OrdenTrabajo asignarMecanico(BigInteger ordenTrabajoId, BigInteger mecanicoId);
     OrdenTrabajo getById(BigInteger id);
     OrdenTrabajo generateBill(BigInteger ordenTrabajoId, PagoRequestDTO pagoRequestDTO);
+    OrdenTrabajo closeBill(BigInteger ordenTrabajoId);
 }

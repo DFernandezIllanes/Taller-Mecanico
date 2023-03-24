@@ -1,6 +1,7 @@
 package ar.com.besysoft.tallermecanico.service.implementations;
 
 import ar.com.besysoft.tallermecanico.dtos.PagoRequestDTO;
+import ar.com.besysoft.tallermecanico.exception.mismatch.OrdenTrabajoMismatchException;
 import ar.com.besysoft.tallermecanico.exception.notAvailable.MecanicoNotAvailableException;
 import ar.com.besysoft.tallermecanico.exception.notFound.EmpleadoNotFoundException;
 import ar.com.besysoft.tallermecanico.exception.notFound.OrdenTrabajoNotFoundException;
@@ -40,27 +41,9 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
 
         //TODO agregar validacion para no volver a ingresar un auto por patente que aun sigue en el taller
 
-        Optional<Empleado> optionalRecepcionista = validarRecepcionista(ordenTrabajo);
-        if(!optionalRecepcionista.isPresent()) {
-            throw new EmpleadoNotFoundException(
-                    String.format("No existe un recepcionista con ID %d", ordenTrabajo.getRecepcionista().getId()),
-                    new RuntimeException("Causa Original")
-            );
-        }
-
-        Optional<Vehiculo> optionalVehiculo = validarVehiculo(ordenTrabajo);
-        if(!optionalVehiculo.isPresent()) {
-            throw new VehiculoNotFoundException(
-                    String.format("No figura en los registros un vehiculo con patente %s", ordenTrabajo.getVehiculo().getPatente()),
-                    new RuntimeException("Causa Original")
-            );
-        }
-
-        Empleado recepcionista = optionalRecepcionista.get();
-        Vehiculo vehiculo = optionalVehiculo.get();
-        ordenTrabajo.setRecepcionista(recepcionista);
-        ordenTrabajo.setVehiculo(vehiculo);
-        return this.ordenTrabajoRepository.save(ordenTrabajo);
+        Empleado recepcionista = validarEmpleadoPorIdyTipo(ordenTrabajo.getRecepcionista().getId(), "recepcionista");
+        Vehiculo vehiculo = buscarVehiculoPorPatente(ordenTrabajo.getVehiculo().getPatente());
+        return cargarDatosInicialesOrdenTrabajoYGuardar(ordenTrabajo, recepcionista, vehiculo);
     }
 
     @Override
@@ -70,7 +53,6 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
 
     @Override
     public OrdenTrabajo asignarMecanico(BigInteger ordenTrabajoId, BigInteger mecanicoId) {
-
         OrdenTrabajo ordenTrabajo = buscarOrdenTrabajoPorId(ordenTrabajoId);
         Mecanico mecanico = buscarMecanicoPorId(mecanicoId);
         if( !comprobarDisponibilidadMecanico(mecanico)) {
@@ -94,6 +76,13 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
         return cambiarEstadoOrdenTrabajoYGuardar(ordenTrabajo, "Facturada");
     }
 
+    @Override
+    public OrdenTrabajo closeBill(BigInteger ordenTrabajoId) {
+        OrdenTrabajo ordenTrabajo = buscarOrdenTrabajoPorId(ordenTrabajoId);
+        comprobarEstadoOrdenTrabajo(ordenTrabajo, "Facturada");
+        return cambiarEstadoOrdenTrabajoYGuardar(ordenTrabajo, "Cerrada");
+    }
+
     private OrdenTrabajo buscarOrdenTrabajoPorId(BigInteger id) {
         Optional<OrdenTrabajo> ordenTrabajoOptional = this.ordenTrabajoRepository.findById(id);
         if(!ordenTrabajoOptional.isPresent()) {
@@ -114,19 +103,14 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
         return mecanicoOptional.get();
     }
 
-    private Optional<Empleado> validarRecepcionista(OrdenTrabajo ordenTrabajo) {
-        Empleado recepcionista = ordenTrabajo.getRecepcionista();
-        //return this.empleadoRepository.findByIdAndTipoEmpleado(recepcionista.getId(), "recepcionista");
-        return buscarEmpleadoPorIdYTipo(recepcionista.getId(), "recepcionista");
+    private OrdenTrabajo cargarDatosInicialesOrdenTrabajoYGuardar(OrdenTrabajo ordenTrabajo, Empleado recepcionista, Vehiculo vehiculo) {
+        ordenTrabajo.setRecepcionista(recepcionista);
+        ordenTrabajo.setVehiculo(vehiculo);
+        return this.ordenTrabajoRepository.save(ordenTrabajo);
     }
 
     private Optional<Empleado> buscarEmpleadoPorIdYTipo(BigInteger empleadoId, String tipoEmpleado) {
         return this.empleadoRepository.findByIdAndTipoEmpleado(empleadoId, tipoEmpleado);
-    }
-
-    private Optional<Vehiculo> validarVehiculo(OrdenTrabajo ordenTrabajo) {
-        Vehiculo vehiculo = ordenTrabajo.getVehiculo();
-        return this.vehiculoRepository.findByPatente(vehiculo.getPatente());
     }
 
     private boolean comprobarDisponibilidadMecanico(Mecanico mecanico) {
@@ -175,5 +159,24 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
     private OrdenTrabajo cambiarEstadoOrdenTrabajoYGuardar(OrdenTrabajo ordenTrabajo, String nuevoEstado) {
         ordenTrabajo.setEstado(nuevoEstado);
         return this.ordenTrabajoRepository.save(ordenTrabajo);
+    }
+
+    private OrdenTrabajo comprobarEstadoOrdenTrabajo(OrdenTrabajo ordenTrabajo, String estado) {
+        if(!ordenTrabajo.getEstado().equalsIgnoreCase(estado)) {
+            throw new OrdenTrabajoMismatchException(String.format("La orden de trabajo no se encuentra en estado %s", estado),
+                    new RuntimeException("Causa Original")
+            );
+        }
+        return ordenTrabajo;
+    }
+
+    private Vehiculo buscarVehiculoPorPatente(String patente) {
+        Optional<Vehiculo> vehiculoOptional = this.vehiculoRepository.findByPatente(patente);
+        if(!vehiculoOptional.isPresent()) {
+            throw new VehiculoNotFoundException(String.format("No existe un vehiculo con patente %s", patente),
+                    new RuntimeException("Causa Original")
+            );
+        }
+        return vehiculoOptional.get();
     }
 }
